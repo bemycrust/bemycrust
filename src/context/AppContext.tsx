@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Types
@@ -28,6 +27,7 @@ export interface MenuItem {
   name: string;
   type: ItemType;
   ingredients: { itemId: string; amount: number }[];
+  price: number;
 }
 
 export interface PizzaMenuItem extends MenuItem {
@@ -120,6 +120,7 @@ interface AppContextType {
   setReportTimeframe: (timeframe: ReportTimeframe) => void;
   addInventoryItem: (item: Omit<InventoryItem, 'id' | 'lastUpdated'>) => void;
   updateInventoryItem: (id: string, data: Partial<InventoryItem>) => void;
+  updateStartingWeight: (id: string, weight: number) => void;
   addMenuItem: (item: Omit<PizzaMenuItem | FriesMenuItem | DrinkMenuItem, 'id'>) => void;
   addMiscSale: (sale: Omit<MiscSaleRecord, 'id'>) => void;
   addExtraItem: (item: Omit<ExtraItem, 'id'>) => void;
@@ -148,7 +149,7 @@ interface AppProviderProps {
 }
 
 const PASSWORD = "bemycrust@123";
-const PASSWORD_PROTECTED_SECTIONS = ["Report", "History", "Menu Items"];
+const PASSWORD_PROTECTED_SECTIONS = ["Report", "History", "Menu Items", "Inventory"];
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // Initialize state from localStorage or with defaults
@@ -245,13 +246,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     ));
   };
 
+  // Special method to update starting weight (requires password)
+  const updateStartingWeight = (id: string, weight: number) => {
+    setInventory(prev => prev.map(item => 
+      item.id === id ? { ...item, startingWeight: weight, lastUpdated: currentDate } : item
+    ));
+  };
+
   // Add menu item (pizza, fries, or drink)
   const addMenuItem = (item: Omit<PizzaMenuItem | FriesMenuItem | DrinkMenuItem, 'id'>) => {
     const newItem = {
       ...item,
       id: Date.now().toString()
     };
-    setMenuItems(prev => [...prev, newItem]);
+    setMenuItems(prev => [...prev, newItem as PizzaMenuItem | FriesMenuItem | DrinkMenuItem]);
   };
 
   // Add extra item
@@ -565,6 +573,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setReportTimeframe,
     addInventoryItem,
     updateInventoryItem,
+    updateStartingWeight,
     addMenuItem,
     addMiscSale,
     addExtraItem,

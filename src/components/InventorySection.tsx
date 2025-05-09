@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import PasswordModal from './PasswordModal';
 
 const InventorySection: React.FC = () => {
-  const { inventory, addInventoryItem, updateInventoryItem, currentDate } = useAppContext();
+  const { inventory, addInventoryItem, updateInventoryItem, updateStartingWeight, currentDate, checkPassword } = useAppContext();
   const { toast } = useToast();
   
   const [newItem, setNewItem] = useState({
@@ -17,6 +18,10 @@ const InventorySection: React.FC = () => {
     unit: 'g',
     updateFrequency: 'daily'
   });
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState('');
+  const [newStartingWeight, setNewStartingWeight] = useState(0);
 
   const handleAddItem = () => {
     if (!newItem.name) {
@@ -52,6 +57,21 @@ const InventorySection: React.FC = () => {
 
   const handleEndingWeightChange = (id: string, value: number) => {
     updateInventoryItem(id, { endingWeight: value });
+  };
+
+  const handleStartingWeightChange = (id: string, value: number) => {
+    setSelectedItemId(id);
+    setNewStartingWeight(value);
+    setShowPasswordModal(true);
+  };
+
+  const handlePasswordSuccess = () => {
+    updateStartingWeight(selectedItemId, newStartingWeight);
+    setShowPasswordModal(false);
+    toast({
+      title: "Success",
+      description: "Starting weight updated",
+    });
   };
 
   const getItemsToUpdateToday = () => {
@@ -157,7 +177,17 @@ const InventorySection: React.FC = () => {
                 {itemsToUpdate.map((item) => (
                   <tr key={item.id} className="border-t">
                     <td className="px-4 py-2">{item.name}</td>
-                    <td className="px-4 py-2">{item.startingWeight}</td>
+                    <td className="px-4 py-2">
+                      <div className="flex space-x-2 items-center">
+                        <Input
+                          type="number"
+                          value={item.startingWeight || ''}
+                          onChange={(e) => handleStartingWeightChange(item.id, parseFloat(e.target.value) || 0)}
+                          className="w-24"
+                        />
+                        <span className="text-xs text-gray-500">(Protected)</span>
+                      </div>
+                    </td>
                     <td className="px-4 py-2">
                       <Input
                         type="number"
@@ -184,6 +214,14 @@ const InventorySection: React.FC = () => {
           )}
         </div>
       )}
+
+      <PasswordModal 
+        isOpen={showPasswordModal} 
+        onClose={() => setShowPasswordModal(false)} 
+        onSuccess={handlePasswordSuccess}
+        checkPassword={checkPassword}
+        title="Password Required to Update Starting Weight"
+      />
     </div>
   );
 };
