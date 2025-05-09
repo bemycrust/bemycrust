@@ -87,6 +87,7 @@ const PizzaTab: React.FC = () => {
       amount: Math.floor(Math.random() * 100) + 50 // Random amount between 50-150
     }));
 
+    // We need to explicitly cast the item as PizzaMenuItem to include the pizza-specific properties
     addMenuItem({
       name: newPizza.name,
       type: 'Pizza',
@@ -95,7 +96,7 @@ const PizzaTab: React.FC = () => {
       packagingId: newPizza.packagingId,
       price: newPizza.price,
       ingredients: ingredients
-    });
+    } as Omit<PizzaMenuItem, 'id'>);
 
     toast({
       title: "Success",
@@ -280,6 +281,7 @@ const FriesTab: React.FC = () => {
         amount: 200 // 200g of potatoes per serving
       }));
 
+    // We need to explicitly cast the item as FriesMenuItem to include fries-specific properties
     addMenuItem({
       name: newFries.name,
       type: 'Fries',
@@ -290,7 +292,7 @@ const FriesTab: React.FC = () => {
         itemId: 'placeholder',
         amount: 200
       }]
-    });
+    } as Omit<FriesMenuItem, 'id'>);
 
     toast({
       title: "Success",
@@ -434,6 +436,7 @@ const DrinksTab: React.FC = () => {
     const lidId = packaging.find(pkg => pkg.name.includes('Lid'))?.id || '';
     const strawId = packaging.find(pkg => pkg.name.includes('Straw'))?.id || '';
 
+    // We need to explicitly cast the item as DrinkMenuItem to include drink-specific properties
     addMenuItem({
       name: newDrink.name,
       type: 'Drink',
@@ -442,7 +445,7 @@ const DrinksTab: React.FC = () => {
       price: newDrink.price,
       packagingIds: [glassId, lidId, strawId].filter(Boolean),
       ingredients: [] // Drinks typically don't have ingredients from inventory
-    });
+    } as Omit<DrinkMenuItem, 'id'>);
 
     toast({
       title: "Success",

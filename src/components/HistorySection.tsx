@@ -198,18 +198,18 @@ const HistorySection: React.FC = () => {
                     <table className="w-full border-collapse">
                       <thead>
                         <tr className="bg-gray-50">
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Pizza</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Item</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Size</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Crust</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Type</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Quantity</th>
                         </tr>
                       </thead>
                       <tbody>
                         {selectedReport.sales.map((sale) => (
                           <tr key={sale.id} className="border-t">
-                            <td className="px-4 py-2">{sale.pizzaName}</td>
-                            <td className="px-4 py-2">{sale.pizzaSize}</td>
-                            <td className="px-4 py-2">{sale.crustType}</td>
+                            <td className="px-4 py-2">{sale.itemName}</td>
+                            <td className="px-4 py-2">{sale.details?.size || '-'}</td>
+                            <td className="px-4 py-2">{sale.details?.crustType || sale.details?.variant || '-'}</td>
                             <td className="px-4 py-2">{sale.quantity}</td>
                           </tr>
                         ))}
