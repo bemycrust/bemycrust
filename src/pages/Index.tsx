@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AppProvider } from '@/context/AppContext';
+import { AppProvider, useAppContext } from '@/context/AppContext';
 import Navigation from '@/components/Navigation';
 import InventorySection from '@/components/InventorySection';
 import MenuItemsSection from '@/components/MenuItemsSection';
@@ -34,7 +34,7 @@ const Index = () => {
 };
 
 const AppContent = () => {
-  const { selectedTab } = React.useContext(AppProvider.context);
+  const { selectedTab } = useAppContext();
 
   return (
     <>
